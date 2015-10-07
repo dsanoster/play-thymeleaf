@@ -11,7 +11,6 @@ import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 import org.thymeleaf.templateresolver.TemplateResolver;
 import org.thymeleaf.templateresolver.UrlTemplateResolver;
-import org.thymeleaf.util.Validate;
 
 import com.google.inject.Singleton;
 
@@ -28,71 +27,48 @@ public class ThymeleafRenderer {
 
   public ThymeleafRenderer() {
     Configuration config = Play.application().configuration();
-    config = config.getConfig("thymeleaf");
-    Validate.notNull(config, "Thymeleaf setting not exist");
+    String prefix = config.getString("thymeleaf.prefix", "views/");
+    String suffix = config.getString("thymeleaf.suffix", ".html");
+    String templateMode = config.getString("thymeleaf.templateMode", "LEGACYHTML5");
+    String characterEncoding = config.getString("thymeleaf.characterEncoding", "UTF-8");
+    String nonChacheablePattern = config.getString("thymeleaf.nonChacheablePattern", "include/*");
+    Long cacheTTLMs = config.getMilliseconds("thymeleaf.cacheTTLMs", null);
 
-    String views = config.getString("views");
-    String suffix = config.getString("suffix");
-    String mode = config.getString("mode");
-    Long ttl = config.getMilliseconds("ttl");
-    String encoding = config.getString("encoding");
-    String include = config.getString("include");
-
-    // デフォルトの設定値
-    views = (views == null ? "views/" : views);
-    suffix = (suffix == null ? ".html" : suffix);
-    mode = (mode == null ? "LEGACYHTML5" : mode);
-    ttl = (ttl == null ? 1 * 60 * 1000 : ttl);
-    encoding = (encoding == null ? "UTF-8" : encoding);
-    include = (include == null ? "include/*" : include);
-
-    // logs/application.logに設定値をログとして出しておく
-    Logger.info(String.format("thymeleaf.views: %s", views));
-    Logger.info(String.format("thymeleaf.suffix: %s", suffix));
-    Logger.info(String.format("thymeleaf.mode: %s", mode));
-    Logger.info(String.format("thymeleaf.ttl: %d", ttl));
-    Logger.info(String.format("thymeleaf.encoding: %s", encoding));
-    Logger.info(String.format("thymeleaf.include: %s", include));
-
-    // thymeleaf.viewsをURIに変換
+    TemplateResolver resolver = null;
     URI uri = null;
     try {
-      uri = new URI(views);
+      uri = new URI(prefix);
     } catch (Exception e) {
     }
-    Validate.notNull(uri, "Malformat thymeleaf.views: " + views);
 
-    // URIの形式によってリゾルバを選択
-    TemplateResolver resolver = null;
-    String scheme = uri.getScheme();
-    Logger.debug("uri=【" + uri + "】");
-    Logger.debug("scheme=【" + scheme + "】");
-    Logger.debug("uri.getPath()=【" + uri.getPath() + "】");
-
-    if (scheme == null) {
+    if (uri == null || uri.getScheme() == null) {
       resolver = new ClassLoaderTemplateResolver();
+      resolver.setPrefix(prefix);
+
       Logger.debug("======ClassLoaderTemplateResolver");
-      resolver.setPrefix(uri.getPath());
-    } else if (scheme.equals("file")) {
+      Logger.debug("======" + prefix);
+    } else if (uri.getScheme().equals("file")) {
       resolver = new FileTemplateResolver();
-      Logger.debug("======FileTemplateResolver");
       resolver.setPrefix(uri.getPath());
+
+      Logger.debug("======FileTemplateResolver");
+      Logger.debug("======" + uri.getPath());
     } else {
       resolver = new UrlTemplateResolver();
-      Logger.debug("======UrlTemplateResolver");
       resolver.setPrefix(uri.toASCIIString());
+
+      Logger.debug("======UrlTemplateResolver");
+      Logger.debug("======" + uri.toASCIIString());
     }
 
-    // リゾルバの共通設定
-    resolver.setTemplateMode(mode);
     resolver.setSuffix(suffix);
-    resolver.setCacheTTLMs(ttl);
-    resolver.setCharacterEncoding(encoding);
+    resolver.setTemplateMode(templateMode);
+    resolver.setCharacterEncoding(characterEncoding);
     Set<String> nonChacheablePatterns = new HashSet<String>();
-    nonChacheablePatterns.add(include);
+    nonChacheablePatterns.add(nonChacheablePattern);
     resolver.setNonCacheablePatterns(nonChacheablePatterns);
+    resolver.setCacheTTLMs(cacheTTLMs);
 
-    // テンプレートエンジンの作成
     engine = new TemplateEngine();
     engine.setTemplateResolver(resolver);
     engine.addDialect(new LayoutDialect());
