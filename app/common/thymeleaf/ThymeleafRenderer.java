@@ -49,7 +49,7 @@ public class ThymeleafRenderer {
       Logger.debug("======" + prefix);
     } else if (uri.getScheme().equals("file")) {
       resolver = new FileTemplateResolver();
-      resolver.setPrefix(uri.getPath());
+      resolver.setPrefix("D:/mywork/include/");
 
       Logger.debug("======FileTemplateResolver");
       Logger.debug("======" + uri.getPath());
