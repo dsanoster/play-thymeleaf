@@ -16,7 +16,6 @@ import com.google.inject.Singleton;
 
 import nz.net.ultraq.thymeleaf.LayoutDialect;
 import play.Configuration;
-import play.Logger;
 import play.Play;
 import play.twirl.api.Html;
 
@@ -31,7 +30,7 @@ public class ThymeleafRenderer {
     String suffix = config.getString("thymeleaf.suffix", ".html");
     String templateMode = config.getString("thymeleaf.templateMode", "LEGACYHTML5");
     String characterEncoding = config.getString("thymeleaf.characterEncoding", "UTF-8");
-    String nonChacheablePattern = config.getString("thymeleaf.nonChacheablePattern", "include/*");
+    String nonCacheablePattern = config.getString("thymeleaf.nonCacheablePattern", "include/*");
     Long cacheTTLMs = config.getMilliseconds("thymeleaf.cacheTTLMs", null);
 
     TemplateResolver resolver = null;
@@ -44,28 +43,19 @@ public class ThymeleafRenderer {
     if (uri == null || uri.getScheme() == null) {
       resolver = new ClassLoaderTemplateResolver();
       resolver.setPrefix(prefix);
-
-      Logger.debug("======ClassLoaderTemplateResolver");
-      Logger.debug("======" + prefix);
     } else if (uri.getScheme().equals("file")) {
       resolver = new FileTemplateResolver();
-      resolver.setPrefix("D:/mywork/include/");
-
-      Logger.debug("======FileTemplateResolver");
-      Logger.debug("======" + uri.getPath());
+      resolver.setPrefix(uri.getPath());
     } else {
       resolver = new UrlTemplateResolver();
       resolver.setPrefix(uri.toASCIIString());
-
-      Logger.debug("======UrlTemplateResolver");
-      Logger.debug("======" + uri.toASCIIString());
     }
 
     resolver.setSuffix(suffix);
     resolver.setTemplateMode(templateMode);
     resolver.setCharacterEncoding(characterEncoding);
     Set<String> nonChacheablePatterns = new HashSet<String>();
-    nonChacheablePatterns.add(nonChacheablePattern);
+    nonChacheablePatterns.add(nonCacheablePattern);
     resolver.setNonCacheablePatterns(nonChacheablePatterns);
     resolver.setCacheTTLMs(cacheTTLMs);
 
