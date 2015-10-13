@@ -1,5 +1,8 @@
 package controllers;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.inject.Inject;
 
 import common.thymeleaf.ThymeleafRenderer;
@@ -15,7 +18,6 @@ public class Application extends Controller {
 
   public Result index() {
     Form<UserForm> form = Form.form(UserForm.class).fill(new UserForm());
-    form.
     return index(form);
   }
 
@@ -26,8 +28,18 @@ public class Application extends Controller {
   public Result createUser() {
     Form<UserForm> form = Form.form(UserForm.class).bindFromRequest();
     if (form.hasErrors()) {
-      index(form);
+      System.out.println(form.get());
+      form = Form.form(UserForm.class).bind(new HashMap<String, String>());
+      return index(form);
     }
-    return ok(thymeleaf.render("index", form));
+    UserForm userForm = form.get();
+    return redirect(routes.Application.getUser(userForm.getName(), userForm.getEmail()));
+  }
+
+  public Result getUser(String name, String email) {
+    Map<String, String> map = new HashMap<String, String>();
+    map.put("name", name);
+    map.put("email", email);
+    return ok(thymeleaf.render("user", map));
   }
 }

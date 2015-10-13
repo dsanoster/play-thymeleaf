@@ -4,7 +4,8 @@
 
 # Home page
 GET     /                           controllers.Application.index()
-POST    /user                       controllers.Application.createUser()
+POST    /                           controllers.Application.createUser()
+GET     /user                       controllers.Application.getUser(name ?= "", email ?= "")
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

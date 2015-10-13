@@ -7,9 +7,10 @@
 </head>
 <body>
 	<h1>インデックスページへようこそ！</h1>
-	<form action="user" method="post" th:object="${it.">
-		<input type="text" name="name">
-		<input type="text" name="email">
+	<form action="#" method="post" th:object="${it.get()}">
+		<div>name：<input type="text" name="name" th:value="*{name}" /></div>
+		<div>email:<input type="text" name="email" th:value="*{email}" /></div>
+		<div><input type="submit" /></div>
 	</form>
 </body>
 </html>
