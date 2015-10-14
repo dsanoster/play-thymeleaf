@@ -28,8 +28,6 @@ public class Application extends Controller {
   public Result createUser() {
     Form<UserForm> form = Form.form(UserForm.class).bindFromRequest();
     if (form.hasErrors()) {
-      System.out.println(form.get());
-      form = Form.form(UserForm.class).bind(new HashMap<String, String>());
       return index(form);
     }
     UserForm userForm = form.get();

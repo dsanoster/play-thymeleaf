@@ -4,10 +4,10 @@ import javax.validation.constraints.Pattern;
 
 public class UserForm {
 
-  @Pattern(message = "user.name.error1", regexp = "^[a-zA-Z]{6,}$")
+  @Pattern(message = "「name」がエラーです", regexp = "^[a-zA-Z]{6,}$")
   private String name;
 
-  @Pattern(message = "user.email.error1",
+  @Pattern(message = "「email」がエラーです",
       regexp = "^[a-zA-Z0-9!#$%&'_`/=~\\*\\+\\-\\?\\^\\{\\|\\}]+(\\.[a-zA-Z0-9!#$%&'_`/=~\\*\\+\\-\\?\\^\\{\\|\\}]+)*+(.*)@[a-zA-Z0-9][a-zA-Z0-9\\-]*(\\.[a-zA-Z0-9\\-]+)+$")
   private String email;
 

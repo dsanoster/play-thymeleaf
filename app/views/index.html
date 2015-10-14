@@ -7,8 +7,10 @@
 </head>
 <body>
 	<h1>インデックスページへようこそ！</h1>
-	<form action="#" method="post" th:object="${it.get()}">
+	<form action="#" method="post" th:object="${it.data()}">
+		<div th:if="${it.error('name')}"><span th:text="${it.error('name').message()}">nameのエラー</span></div>
 		<div>name：<input type="text" name="name" th:value="*{name}" /></div>
+		<div th:if="${it.error('email')}"><span th:text="${it.error('email').message()}">messageのエラー</span></div>
 		<div>email:<input type="text" name="email" th:value="*{email}" /></div>
 		<div><input type="submit" /></div>
 	</form>
