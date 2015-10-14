@@ -6,10 +6,17 @@ lazy val root = (project in file(".")).enablePlugins(PlayJava)
 
 scalaVersion := "2.11.6"
 
+// Add app folder as resource directory so that mapper xml files are in the classpath
+unmanagedResourceDirectories in Compile <+= baseDirectory( _ / "app" )
+
+// but filter out java and html files that would then also be copied to the classpath
+excludeFilter in Compile in unmanagedResources := "*.java" 
+
 libraryDependencies ++= Seq(
   javaJdbc,
   cache,
   javaWs,
+  filters,
   "com.google.inject.extensions" % "guice-multibindings" % "4.0",
   "net.sourceforge.nekohtml" % "nekohtml" % "1.9.22",
   "org.thymeleaf" % "thymeleaf" % "2.1.4.RELEASE",
