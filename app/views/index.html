@@ -3,14 +3,16 @@
 	xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>インデックスページ</title>
+<title>Index</title>
 </head>
 <body>
-	<h1>インデックスページへようこそ！</h1>
+	<h1>Welcome to Index Page !</h1>
+	<div th:include="import/thymeleaf-template-test::datetime">datetime</div>
+	<div th:include="include/notice::notice">notice</div>
 	<form action="#" method="post" th:object="${it.data()}">
-		<div th:if="${it.error('name')}"><span th:text="${it.error('name').message()}">nameのエラー</span></div>
+		<div th:if="${it.error('name')}"><span th:text="${it.error('name').message()}">name error</span></div>
 		<div>name：<input type="text" name="name" th:value="*{name}" /></div>
-		<div th:if="${it.error('email')}"><span th:text="${it.error('email').message()}">messageのエラー</span></div>
+		<div th:if="${it.error('email')}"><span th:text="${it.error('email').message()}">email error</span></div>
 		<div>email:<input type="text" name="email" th:value="*{email}" /></div>
 		<div><input type="submit" /></div>
 	</form>
