@@ -6,6 +6,7 @@
 GET     /                           controllers.Application.index()
 POST    /                           controllers.Application.createUser()
 GET     /user                       controllers.Application.getUser(name ?= "", email ?= "")
+GET     /clear_template_cache       controllers.Application.clearTemplateCache()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

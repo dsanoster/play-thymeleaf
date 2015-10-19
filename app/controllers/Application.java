@@ -40,4 +40,9 @@ public class Application extends Controller {
     map.put("email", email);
     return ok(thymeleaf.render("user", map));
   }
+
+  public Result clearTemplateCache() {
+    thymeleaf.clearTemplateCache();
+    return ok("Template cache has cleared.");
+  }
 }
