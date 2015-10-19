@@ -10,5 +10,6 @@ dist
 /.classpath
 /.project
 /.settings
+/.checkstyle
 /RUNNING_PID
 /bin/
