@@ -38,23 +38,15 @@ public class ThymeleafRenderer {
     return new Configuration(map);
   }
 
-  private TemplateResolver getTemplateResolver(Configuration conf, Configuration dConf) {
-    String prefix = conf.getString("prefix", dConf.getString("prefix"));
-    String suffix = conf.getString("suffix", dConf.getString("suffix"));
-    String templateMode = conf.getString("templateMode", dConf.getString("templateMode"));
-    String characterEncoding =
-        conf.getString("characterEncoding", dConf.getString("characterEncoding"));
-    Long cacheTTLMs = conf.getLong("cacheTTLMs", dConf.getLong("cacheTTLMs"));
-    List<String> nonCacheablePatterns =
-        conf.getStringList("nonCacheablePatterns", dConf.getStringList("nonCacheablePatterns"));
-    List<String> resolvablePatterns =
-        conf.getStringList("resolvablePatterns", dConf.getStringList("resolvablePatterns"));
+  private TemplateResolver getTemplateResolver(Configuration conf, Configuration dconf) {
+    String prefix = conf.getString("prefix", dconf.getString("prefix"));
 
     TemplateResolver resolver = null;
     URI uri = null;
     try {
       uri = new URI(prefix);
     } catch (Exception e) {
+      // NOP
     }
 
     if (uri == null || uri.getScheme() == null) {
@@ -68,10 +60,20 @@ public class ThymeleafRenderer {
       resolver.setPrefix(uri.toASCIIString());
     }
 
+    String suffix = conf.getString("suffix", dconf.getString("suffix"));
+    String templateMode = conf.getString("templateMode", dconf.getString("templateMode"));
+    String characterEncoding =
+        conf.getString("characterEncoding", dconf.getString("characterEncoding"));
+    Long cacheTtlMs = conf.getLong("cacheTTLMs", dconf.getLong("cacheTTLMs"));
+    List<String> nonCacheablePatterns =
+        conf.getStringList("nonCacheablePatterns", dconf.getStringList("nonCacheablePatterns"));
+    List<String> resolvablePatterns =
+        conf.getStringList("resolvablePatterns", dconf.getStringList("resolvablePatterns"));
+
     resolver.setSuffix(suffix);
     resolver.setTemplateMode(templateMode);
     resolver.setCharacterEncoding(characterEncoding);
-    resolver.setCacheTTLMs(cacheTTLMs);
+    resolver.setCacheTTLMs(cacheTtlMs);
     resolver.setNonCacheablePatterns(new HashSet<String>(nonCacheablePatterns));
     resolver.setResolvablePatterns(new HashSet<String>(resolvablePatterns));
 
@@ -81,18 +83,18 @@ public class ThymeleafRenderer {
   public ThymeleafRenderer() {
     engine = new TemplateEngine();
 
-    Configuration dConf = getDefaultTemplateResolverConfig();
+    Configuration dconf = getDefaultTemplateResolverConfig();
     List<Configuration> confList =
         Play.application().configuration().getConfigList("thymeleafTemplateResolvers");
 
     if (confList != null && confList.size() > 0) {
       for (int i = 0; i < confList.size(); i++) {
-        TemplateResolver resolver = getTemplateResolver(confList.get(i), dConf);
+        TemplateResolver resolver = getTemplateResolver(confList.get(i), dconf);
         resolver.setOrder(i + 1);
         engine.addTemplateResolver(resolver);
       }
     } else {
-      engine.setTemplateResolver(getTemplateResolver(dConf, dConf));
+      engine.setTemplateResolver(getTemplateResolver(dconf, dconf));
     }
 
     engine.addDialect(new LayoutDialect());
