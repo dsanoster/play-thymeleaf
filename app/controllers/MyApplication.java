@@ -29,13 +29,13 @@ public class MyApplication extends CSRFController {
 
   public Result createUser() {
     Form<UserForm> form = Form.form(UserForm.class).bindFromRequest();
+    if (!checkCsrf(form.data().get("csrfToken"))) {
+      return forbidden("CSRF Error has occurred.");
+    }
     if (form.hasErrors()) {
       return index(form);
     }
     UserForm userForm = form.get();
-    if (!checkCsrf(userForm.getCsrfToken())) {
-      return forbidden("CSRF Error has occurred.");
-    }
     return redirect(routes.MyApplication.getUser(userForm.getName(), userForm.getEmail()));
   }
 
