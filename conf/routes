@@ -3,10 +3,10 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.Application.index()
-POST    /                           controllers.Application.createUser()
-GET     /user                       controllers.Application.getUser(name ?= "", email ?= "")
-GET     /clear_template_cache       controllers.Application.clearTemplateCache()
+GET     /                           controllers.MyApplication.index()
+POST    /                           controllers.MyApplication.createUser()
+GET     /user                       controllers.MyApplication.getUser(name ?= "", email ?= "")
+GET     /clear_template_cache       controllers.MyApplication.clearTemplateCache()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

@@ -5,13 +5,13 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import common.controllers.CSRFController;
 import common.thymeleaf.ThymeleafRenderer;
 import forms.UserForm;
 import play.data.Form;
-import play.mvc.Controller;
 import play.mvc.Result;
 
-public class Application extends Controller {
+public class MyApplication extends CSRFController {
 
   @Inject
   ThymeleafRenderer thymeleaf;
@@ -22,6 +22,8 @@ public class Application extends Controller {
   }
 
   public Result index(Form<UserForm> form) {
+    String csrfToken = getToken();
+    form.data().put("csrfToken", csrfToken);
     return ok(thymeleaf.render("index", form));
   }
 
@@ -31,7 +33,10 @@ public class Application extends Controller {
       return index(form);
     }
     UserForm userForm = form.get();
-    return redirect(routes.Application.getUser(userForm.getName(), userForm.getEmail()));
+    if (!checkCsrf(userForm.getCsrfToken())) {
+      return forbidden("CSRF Error has occurred.");
+    }
+    return redirect(routes.MyApplication.getUser(userForm.getName(), userForm.getEmail()));
   }
 
   public Result getUser(String name, String email) {

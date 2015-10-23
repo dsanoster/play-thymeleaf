@@ -10,6 +10,7 @@
 	<div th:include="import/thymeleaf-template-test::datetime">datetime</div>
 	<div th:include="include/notice::notice">notice</div>
 	<form action="#" method="post" th:object="${it.data()}">
+		<input type="hidden" name="csrfToken" th:value="*{csrfToken}" />
 		<div th:if="${it.error('name')}"><span th:text="${it.error('name').message()}">name error</span></div>
 		<div>name：<input type="text" name="name" th:value="*{name}" /></div>
 		<div th:if="${it.error('email')}"><span th:text="${it.error('email').message()}">email error</span></div>
