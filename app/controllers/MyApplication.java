@@ -8,6 +8,8 @@ import javax.inject.Inject;
 import common.controllers.CSRFController;
 import common.thymeleaf.ThymeleafRenderer;
 import forms.UserForm;
+import kamon.trace.logging.MdcKeysSupport$;
+import play.Logger;
 import play.data.Form;
 import play.mvc.Result;
 
@@ -17,6 +19,18 @@ public class MyApplication extends CSRFController {
   ThymeleafRenderer thymeleaf;
 
   public Result index() {
+
+    // 普通に出力した場合は通常のMDC（uuid1のみ保管）が出力されるが、
+    // uuid1は引き継がれていない
+    Logger.debug("index1");
+
+    // withMdc()の中ではkamonのMDC（uuid2のみ保管）が出力されるが、
+    // uuid2は引き継がれている
+    MdcKeysSupport$.MODULE$.withMdc(() -> {
+      Logger.debug("index2");
+      return "";
+    });
+
     Form<UserForm> form = Form.form(UserForm.class).fill(new UserForm());
     return index(form);
   }
