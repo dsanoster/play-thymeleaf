@@ -5,6 +5,7 @@ target
 tmp
 dist
 .cache
+.cache-main
 /.idea
 /.idea_modules
 /.classpath
